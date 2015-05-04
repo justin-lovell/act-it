@@ -48,7 +48,7 @@
     <Compile Include="GivenBuilderForFactoriesTests.cs" />
     <Compile Include="GivenBuilderForSubscriptionTests.cs" />
     <Compile Include="GivenFactoryTests.cs" />
-    <Compile Include="GivenPlotBuilder.cs" />
+    <Compile Include="GivenPlotBuilderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

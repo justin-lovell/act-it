@@ -25,7 +25,7 @@ namespace TellIt
             builder.Listen<TheEvent>((@event, busSchedule) => wasCalled = true);
 
             // act
-            var schedule = factory.CreateNewSchedule();
+            var schedule = factory.CreateSceneActor();
             schedule.Encounter(new TheEvent());
 
             // assert

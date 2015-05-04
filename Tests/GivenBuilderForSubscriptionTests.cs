@@ -33,9 +33,9 @@ namespace TellIt
 
             // act
             var factory = builder.GenerateStory();
-            var schedule = factory.CreateNewSchedule();
+            var sceneActory = factory.CreateSceneActor();
 
-            schedule.Encounter(theExpectedEventInstance);
+            sceneActory.Encounter(theExpectedEventInstance);
 
             // assert
             Assert.That(wasCalled, Is.True);
@@ -54,9 +54,9 @@ namespace TellIt
 
             // act
             var factory = builder.GenerateStory();
-            var schedule = factory.CreateNewSchedule();
+            var sceneActor = factory.CreateSceneActor();
 
-            schedule.Encounter(new TheOtherEvent());
+            sceneActor.Encounter(new TheOtherEvent());
 
             // assert
             Assert.That(wasCalled, Is.False);
@@ -74,9 +74,9 @@ namespace TellIt
 
             // act
             var factory = builder.GenerateStory();
-            var schedule = factory.CreateNewSchedule();
+            var sceneActory = factory.CreateSceneActor();
 
-            schedule.Encounter(new TheEvent());
+            sceneActory.Encounter(new TheEvent());
 
             // assert
             Assert.That(wasCalled, Is.False);

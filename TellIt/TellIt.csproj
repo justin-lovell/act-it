@@ -36,6 +36,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Listener.cs" />
     <Compile Include="SceneActor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PlotBuilder.cs" />

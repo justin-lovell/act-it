@@ -1,17 +1,29 @@
 using System;
+using System.Collections.Generic;
 
 namespace TellIt
 {
     public class PlotBuilder
     {
+        private readonly List<Listener> _listeners = new List<Listener>();
+
         public StoryFactory GenerateStory()
         {
-            throw new System.NotImplementedException();
+            return new StoryFactory(_listeners);
         }
 
-        public void Listen<T>(Action<T, SceneActor> callbackFunc)
+        public void Listen<T>(Action<T, SceneActor> callbackFunc) where T : class
         {
-            throw new NotImplementedException();
+            Listener listener = (@event, actor) =>
+            {
+                var o = @event as T;
+
+                if (o != null)
+                {
+                    callbackFunc(o, actor);
+                }
+            };
+            _listeners.Add(listener);
         }
     }
 }

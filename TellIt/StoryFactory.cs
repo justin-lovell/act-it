@@ -1,12 +1,21 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TellIt
 {
-    public class StoryFactory
+    public sealed class StoryFactory
     {
-        public SceneActor CreateNewSchedule()
+        private readonly IEnumerable<Listener> _listeners;
+
+        internal StoryFactory(IEnumerable<Listener> listeners)
         {
-            throw new NotImplementedException();
+            _listeners = listeners.AsEnumerable();
+        }
+
+        public SceneActor CreateSceneActor()
+        {
+            return new SceneActor(_listeners);
         }
 
         public PlotBuilder CreateNestedBuilder()
