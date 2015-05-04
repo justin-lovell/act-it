@@ -13,15 +13,15 @@ namespace TellIt
         // todo: ensure that the events are raised in cascading style
 
         [Test]
-        public void WhenCreatedTheFactoriesAreImmutable()
+        public void WhenCreatedTheListenersAreImmutableWhenInstanceWasCreated()
         {
             // track
             var wasCalled = false;
 
             // arrange
             var builder = new PlotBuilder();
-            var factory = builder.GenerateStory();
 
+            var factory = builder.GenerateStory();
             builder.Listen<TheEvent>((@event, busSchedule) => wasCalled = true);
 
             // act

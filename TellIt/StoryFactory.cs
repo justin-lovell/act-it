@@ -10,7 +10,7 @@ namespace TellIt
 
         internal StoryFactory(IEnumerable<Listener> listeners)
         {
-            _listeners = listeners.AsEnumerable();
+            _listeners = listeners.ToArray();
         }
 
         public SceneActor CreateSceneActor()
@@ -20,7 +20,7 @@ namespace TellIt
 
         public PlotBuilder CreateNestedBuilder()
         {
-            throw new NotImplementedException();
+            return new PlotBuilder(_listeners);
         }
     }
 }

@@ -1,11 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TellIt
 {
     public class PlotBuilder
     {
-        private readonly List<Listener> _listeners = new List<Listener>();
+        private readonly List<Listener> _listeners;
+
+        public PlotBuilder()
+            : this(new Listener[0])
+        {
+        }
+
+        internal PlotBuilder(IEnumerable<Listener> listeners)
+        {
+            _listeners = listeners.ToList();
+        }
 
         public StoryFactory GenerateStory()
         {
