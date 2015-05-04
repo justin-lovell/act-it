@@ -9,8 +9,7 @@ namespace TellIt
         {
         }
 
-        // todo: track instance data
-        // todo: ensure that the events are raised in cascading style
+        // todo: ensure that the events are raised in cascading style (interrupt / queue)
 
         [Test]
         public void WhenCreatedTheListenersAreImmutableWhenInstanceWasCreated()
