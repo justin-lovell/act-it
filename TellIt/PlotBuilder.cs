@@ -8,20 +8,22 @@ namespace TellIt
     public class PlotTapBuilder : IPlotTap
     {
         private readonly List<Listener> _listeners;
+        private readonly StoryContext _context;
 
         public PlotTapBuilder()
-            : this(new Listener[0])
+            : this(new Listener[0], new StoryContext())
         {
         }
 
-        internal PlotTapBuilder(IEnumerable<Listener> listeners)
+        internal PlotTapBuilder(IEnumerable<Listener> listeners, StoryContext context)
         {
+            _context = context;
             _listeners = listeners.ToList();
         }
 
         public StoryFactory GenerateStory()
         {
-            return new StoryFactory(_listeners);
+            return new StoryFactory(_listeners, _context);
         }
 
         public void Listen<T>(Action<T, SceneActor> callbackFunc) where T : class

@@ -6,31 +6,24 @@ namespace TellIt
 {
     public sealed class StoryFactory
     {
-        private readonly StoryContext _context = new StoryContext();
+        private readonly StoryContext _context;
         private readonly IEnumerable<Listener> _listeners;
 
-        internal StoryFactory(IEnumerable<Listener> listeners)
+        internal StoryFactory(IEnumerable<Listener> listeners, StoryContext context)
         {
+            _context = context ?? new StoryContext();
             _listeners = listeners.ToArray();
         }
 
         public Task Encounter<TEvent>(TEvent theEvent)
         {
-            var sceneActor = new SceneActor(_context, Interrupt);
-            return Interrupt(theEvent, sceneActor);
-        }
-
-        private Task Interrupt(object theEvent, SceneActor sceneActor)
-        {
-            var tasks = from listener in _listeners
-                        select listener(theEvent, sceneActor);
-
-            return TaskEx.WhenAll(tasks);
+            var sceneActor = new SceneActor(_listeners, _context);
+            return sceneActor.Interrupt(theEvent);
         }
 
         public PlotTapBuilder CreateNestedBuilder()
         {
-            return new PlotTapBuilder(_listeners);
+            return new PlotTapBuilder(_listeners, _context);
         }
     }
 }

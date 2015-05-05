@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace TellIt
 {
     public class SceneActor
     {
+        private readonly IEnumerable<Listener> _listeners;
         private readonly StoryContext _context;
-        private readonly Func<object, SceneActor, Task> _initiateEncounterFunc;
 
-        internal SceneActor(StoryContext context, Func<object, SceneActor, Task> initiateEncounterFunc)
+        internal SceneActor(IEnumerable<Listener> listeners, StoryContext context)
         {
+            _listeners = listeners;
             _context = context;
-            _initiateEncounterFunc = initiateEncounterFunc;
         }
 
         public T Context<T>() where T : new()
@@ -19,9 +21,12 @@ namespace TellIt
             return _context.GetCurrentInstanceOrCreateNew<T>();
         }
 
-        public Task Interrupt<TEvent>(TEvent nestedEvent, Action<IPlotTap> tapCallback = null)
+        public Task Interrupt<TEvent>(TEvent theEvent, Action<IPlotTap> tapCallback = null)
         {
-            return _initiateEncounterFunc(nestedEvent, this);
+            var tasks = from listener in _listeners
+                        select listener(theEvent, this);
+
+            return TaskEx.WhenAll(tasks);
         }
     }
 }
