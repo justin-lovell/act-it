@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,6 +5,7 @@ namespace TellIt
 {
     public sealed class StoryFactory
     {
+        private readonly StoryContext _context = new StoryContext();
         private readonly IEnumerable<Listener> _listeners;
 
         internal StoryFactory(IEnumerable<Listener> listeners)
@@ -13,9 +13,13 @@ namespace TellIt
             _listeners = listeners.ToArray();
         }
 
-        public SceneActor CreateSceneActor()
+        public void Encounter<TEvent>(TEvent theEvent)
         {
-            return new SceneActor(_listeners);
+            var sceneActor = new SceneActor(_context);
+            foreach (var listener in _listeners)
+            {
+                listener(theEvent, sceneActor);
+            }
         }
 
         public PlotBuilder CreateNestedBuilder()

@@ -1,42 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace TellIt
+﻿namespace TellIt
 {
     public class SceneActor
     {
-        private readonly Dictionary<Type, object> _contextInstances =
-            new Dictionary<Type, object>();
+        private readonly StoryContext _context;
 
-        private readonly IEnumerable<Listener> _listeners;
-
-        internal SceneActor(IEnumerable<Listener> listeners)
+        internal SceneActor(StoryContext context)
         {
-            _listeners = listeners;
-        }
-
-        public void Encounter<TEvent>(TEvent theEvent)
-        {
-            foreach (var listener in _listeners)
-            {
-                listener(theEvent, this);
-            }
+            _context = context;
         }
 
         public T Context<T>() where T : new()
         {
-            object value;
-            var wasFound = _contextInstances.TryGetValue(typeof (T), out value);
-
-            if (wasFound)
-            {
-                return (T) value;
-            }
-
-            var newInstance = new T();
-            _contextInstances.Add(typeof (T), newInstance);
-
-            return newInstance;
+            return _context.GetCurrentInstanceOrCreateNew<T>();
         }
     }
 }

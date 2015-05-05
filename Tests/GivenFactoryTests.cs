@@ -25,8 +25,7 @@ namespace TellIt
             var factory2 = builder2.GenerateStory();
 
             // act
-            var schedule = factory2.CreateSceneActor();
-            schedule.Encounter(new TheEvent());
+            factory2.Encounter(new TheEvent());
 
             // assert
             Assert.That(wasCalled1, Is.True);

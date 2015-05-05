@@ -25,11 +25,10 @@ namespace TellIt
             builder.Listen<TheEvent>((@event, busSchedule) =>
                                      theContext = busSchedule.Context<TheContext>());
 
-            var factory = builder.GenerateStory();
-            var schedule = factory.CreateSceneActor();
+            var story = builder.GenerateStory();
 
             // act
-            schedule.Encounter(new TheEvent());
+            story.Encounter(new TheEvent());
 
             // assert
             Assert.That(theContext, Is.Not.Null);
@@ -46,12 +45,11 @@ namespace TellIt
             builder.Listen<TheEvent>((@event, busSchedule) =>
                                      contexts.Add(busSchedule.Context<TheContext>()));
 
-            var factory = builder.GenerateStory();
-            var schedule = factory.CreateSceneActor();
+            var story = builder.GenerateStory();
 
             // act
-            schedule.Encounter(new TheEvent());
-            schedule.Encounter(new TheEvent());
+            story.Encounter(new TheEvent());
+            story.Encounter(new TheEvent());
 
             // assert
             Assert.That(contexts.Count, Is.EqualTo(2));

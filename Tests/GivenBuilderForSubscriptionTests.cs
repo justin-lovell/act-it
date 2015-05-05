@@ -24,7 +24,7 @@ namespace TellIt
 
             // arrange
             var builder = new PlotBuilder();
-            builder.Listen<TheEvent>((@event, busSchedule) =>
+            builder.Listen<TheEvent>((@event, actor) =>
             {
                 theEventInstance = @event;
                 wasCalled = true;
@@ -33,9 +33,7 @@ namespace TellIt
 
             // act
             var factory = builder.GenerateStory();
-            var sceneActory = factory.CreateSceneActor();
-
-            sceneActory.Encounter(theExpectedEventInstance);
+            factory.Encounter(theExpectedEventInstance);
 
             // assert
             Assert.That(wasCalled, Is.True);
@@ -50,13 +48,11 @@ namespace TellIt
 
             // arrange
             var builder = new PlotBuilder();
-            builder.Listen<TheEvent>((@event, busSchedule) => wasCalled = true);
+            builder.Listen<TheEvent>((@event, actor) => wasCalled = true);
 
             // act
             var factory = builder.GenerateStory();
-            var sceneActor = factory.CreateSceneActor();
-
-            sceneActor.Encounter(new TheOtherEvent());
+            factory.Encounter(new TheOtherEvent());
 
             // assert
             Assert.That(wasCalled, Is.False);
@@ -74,9 +70,7 @@ namespace TellIt
 
             // act
             var factory = builder.GenerateStory();
-            var sceneActory = factory.CreateSceneActor();
-
-            sceneActory.Encounter(new TheEvent());
+            factory.Encounter(new TheEvent());
 
             // assert
             Assert.That(wasCalled, Is.False);
