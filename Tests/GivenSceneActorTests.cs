@@ -45,6 +45,34 @@ namespace TellIt
         }
 
         [Test]
+        public async Task WhenCallingNestedInterruptWithListenersItShouldCascadeInRegistrationOrder()
+        {
+            var checkpoints = new List<int>();
+
+            // arrange
+            var builder = new PlotBuilder();
+
+            builder.Listen<TheEvent>(async (@event, actor) =>
+            {
+                checkpoints.Add(1);
+                await actor.Interrupt(new TheSecondEvent(),
+                                      enrollment =>
+                                      enrollment.Listen<TheSecondEvent>((a, b) => checkpoints.Add(3))
+                    );
+                checkpoints.Add(4);
+            });
+            builder.Listen<TheSecondEvent>((@event, actor) => checkpoints.Add(2));
+
+            // act
+            var story = builder.GenerateStory();
+            await story.Encounter(new TheEvent());
+
+            // assert
+            Assert.That(checkpoints.Count, Is.EqualTo(4));
+            Assert.That(checkpoints, Is.Ordered);
+        }
+
+        [Test]
         public async Task WhenRequestedContextItShouldReturnNewInstance()
         {
             TheContext theContext = null;
