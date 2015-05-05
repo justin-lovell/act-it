@@ -42,7 +42,7 @@ namespace TellIt
         }
 
         [Test]
-        public async Task WhenListeningToEventsItShouldNotRespondToIrrelaventEvents()
+        public async Task WhenListeningToEventsItShouldNotRespondToWhichItWasNotListeningTo()
         {
             // track
             var wasCalled = false;
@@ -60,7 +60,7 @@ namespace TellIt
         }
 
         [Test]
-        public async Task WhenListeningToEventsItShouldNotRespondToIrrelaventEvents2()
+        public async Task WhenListeningToEventsItShouldNotRespondToIrrelaventEvents()
         {
             // tracker
             var wasCalled = false;
