@@ -24,7 +24,7 @@ namespace TellIt
             var theExpectedEventInstance = new TheEvent();
 
             // arrange
-            var builder = new PlotTapBuilder();
+            var builder = new PlotBuilder();
             builder.Listen<TheEvent>((@event, actor) =>
             {
                 theEventInstance = @event;
@@ -51,7 +51,7 @@ namespace TellIt
             var theExpectedEventInstance = new TheEvent();
 
             // arrange
-            var builder = new PlotTapBuilder();
+            var builder = new PlotBuilder();
             builder.Listen<TheEvent>(async (@event, actor) =>
             {
                 theEventInstance = @event;
@@ -76,7 +76,7 @@ namespace TellIt
             var wasCalled = false;
 
             // arrange
-            var builder = new PlotTapBuilder();
+            var builder = new PlotBuilder();
             builder.Listen<TheEvent>((@event, actor) => wasCalled = true);
 
             // act
@@ -94,7 +94,7 @@ namespace TellIt
             var wasCalled = false;
 
             // arrange
-            var builder = new PlotTapBuilder();
+            var builder = new PlotBuilder();
             builder.Listen<TheOtherEvent>((@event, busSchedule) => wasCalled = true);
 
             // act

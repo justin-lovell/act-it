@@ -21,9 +21,9 @@ namespace TellIt
             return sceneActor.Interrupt(theEvent);
         }
 
-        public PlotTapBuilder CreateNestedBuilder()
+        public PlotBuilder CreateNestedBuilder()
         {
-            return new PlotTapBuilder(_listeners, _context);
+            return new PlotBuilder(_listeners, _context);
         }
     }
 }

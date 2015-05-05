@@ -23,6 +23,16 @@ namespace TellIt
 
         public Task Interrupt<TEvent>(TEvent theEvent, Action<IPlotTap> tapCallback = null)
         {
+            if (tapCallback != null)
+            {
+                var nestedPlotBuilder = new PlotBuilder(_listeners, _context);
+
+                tapCallback(nestedPlotBuilder);
+
+                var nestedStory = nestedPlotBuilder.GenerateStory();
+                return nestedStory.Encounter(theEvent);
+            }
+
             var tasks = from listener in _listeners
                         select listener(theEvent, this);
 
