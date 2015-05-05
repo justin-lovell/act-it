@@ -16,8 +16,12 @@ namespace TellIt
 
         public Task Encounter<TEvent>(TEvent theEvent)
         {
-            var sceneActor = new SceneActor(_context);
+            var sceneActor = new SceneActor(_context, Interrupt);
+            return Interrupt(theEvent, sceneActor);
+        }
 
+        private Task Interrupt(object theEvent, SceneActor sceneActor)
+        {
             var tasks = from listener in _listeners
                         select listener(theEvent, sceneActor);
 

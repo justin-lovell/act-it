@@ -15,6 +15,35 @@ namespace TellIt
         {
         }
 
+        public class TheSecondEvent
+        {
+        }
+
+        [Test]
+        public async Task WhenCallingNestedInterruptItShouldCascadeInCallingOrder()
+        {
+            var checkpoints = new List<int>();
+
+            // arrange
+            var builder = new PlotBuilder();
+
+            builder.Listen<TheEvent>(async (@event, actor) =>
+            {
+                checkpoints.Add(1);
+                await actor.Interrupt(new TheSecondEvent());
+                checkpoints.Add(3);
+            });
+            builder.Listen<TheSecondEvent>((@event, actor) => checkpoints.Add(2));
+
+            // act
+            var story = builder.GenerateStory();
+            await story.Encounter(new TheEvent());
+
+            // assert
+            Assert.That(checkpoints.Count, Is.EqualTo(3));
+            Assert.That(checkpoints, Is.Ordered);
+        }
+
         [Test]
         public async Task WhenRequestedContextItShouldReturnNewInstance()
         {
