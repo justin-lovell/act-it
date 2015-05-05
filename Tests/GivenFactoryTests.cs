@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace TellIt
 {
@@ -10,7 +11,7 @@ namespace TellIt
         }
 
         [Test]
-        public void WhenCreatingNestedBuilderItWillFirePreviousSubscriptions()
+        public async Task WhenCreatingNestedBuilderItWillFirePreviousSubscriptions()
         {
             // track
             var wasCalled1 = false;
@@ -25,7 +26,7 @@ namespace TellIt
             var factory2 = builder2.GenerateStory();
 
             // act
-            factory2.Encounter(new TheEvent());
+            await factory2.Encounter(new TheEvent());
 
             // assert
             Assert.That(wasCalled1, Is.True);

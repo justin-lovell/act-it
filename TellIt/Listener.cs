@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
+
 namespace TellIt
 {
-    internal delegate void Listener(object theEvent, SceneActor actor);
+    internal delegate Task Listener(object theEvent, SceneActor actor);
 }

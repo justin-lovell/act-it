@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace TellIt
 {
@@ -10,7 +11,7 @@ namespace TellIt
         }
 
         [Test]
-        public void WhenCreatedTheListenersAreImmutableWhenInstanceWasCreated()
+        public async Task WhenCreatedTheListenersAreImmutableWhenInstanceWasCreated()
         {
             // track
             var wasCalled = false;
@@ -22,7 +23,7 @@ namespace TellIt
             builder.Listen<TheEvent>((@event, busSchedule) => wasCalled = true);
 
             // act
-            story.Encounter(new TheEvent());
+            await story.Encounter(new TheEvent());
 
             // assert
             Assert.That(wasCalled, Is.False);

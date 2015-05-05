@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace TellIt
 {
@@ -14,7 +15,7 @@ namespace TellIt
         }
 
         [Test]
-        public void WhenCreatingFactoryItShouldRespondToEvents()
+        public async Task WhenCreatingFactoryItShouldRespondToEvents()
         {
             // tracker
             var wasCalled = false;
@@ -33,7 +34,7 @@ namespace TellIt
 
             // act
             var factory = builder.GenerateStory();
-            factory.Encounter(theExpectedEventInstance);
+            await factory.Encounter(theExpectedEventInstance);
 
             // assert
             Assert.That(wasCalled, Is.True);
@@ -41,7 +42,7 @@ namespace TellIt
         }
 
         [Test]
-        public void WhenListeningToEventsItShouldNotRespondToIrrelaventEvents()
+        public async Task WhenListeningToEventsItShouldNotRespondToIrrelaventEvents()
         {
             // track
             var wasCalled = false;
@@ -52,14 +53,14 @@ namespace TellIt
 
             // act
             var factory = builder.GenerateStory();
-            factory.Encounter(new TheOtherEvent());
+            await factory.Encounter(new TheOtherEvent());
 
             // assert
             Assert.That(wasCalled, Is.False);
         }
 
         [Test]
-        public void WhenListeningToEventsItShouldNotRespondToIrrelaventEvents2()
+        public async Task WhenListeningToEventsItShouldNotRespondToIrrelaventEvents2()
         {
             // tracker
             var wasCalled = false;
@@ -70,7 +71,7 @@ namespace TellIt
 
             // act
             var factory = builder.GenerateStory();
-            factory.Encounter(new TheEvent());
+            await factory.Encounter(new TheEvent());
 
             // assert
             Assert.That(wasCalled, Is.False);

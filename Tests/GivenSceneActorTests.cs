@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace TellIt
@@ -15,7 +16,7 @@ namespace TellIt
         }
 
         [Test]
-        public void WhenRequestedContextItShouldReturnNewInstance()
+        public async Task WhenRequestedContextItShouldReturnNewInstance()
         {
             TheContext theContext = null;
 
@@ -28,14 +29,14 @@ namespace TellIt
             var story = builder.GenerateStory();
 
             // act
-            story.Encounter(new TheEvent());
+            await story.Encounter(new TheEvent());
 
             // assert
             Assert.That(theContext, Is.Not.Null);
         }
 
         [Test]
-        public void WhenRequestedContextTwiceItShouldReturnTheSameInstance()
+        public async Task WhenRequestedContextTwiceItShouldReturnTheSameInstance()
         {
             var contexts = new List<TheContext>();
 
@@ -48,8 +49,8 @@ namespace TellIt
             var story = builder.GenerateStory();
 
             // act
-            story.Encounter(new TheEvent());
-            story.Encounter(new TheEvent());
+            await story.Encounter(new TheEvent());
+            await story.Encounter(new TheEvent());
 
             // assert
             Assert.That(contexts.Count, Is.EqualTo(2));

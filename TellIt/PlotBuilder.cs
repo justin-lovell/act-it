@@ -33,6 +33,8 @@ namespace TellIt
                 {
                     callbackFunc(o, actor);
                 }
+
+                return TaskEx.IntoTaskResult<object>(null);
             };
             _listeners.Add(listener);
         }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace TellIt
 {
@@ -13,13 +14,14 @@ namespace TellIt
             _listeners = listeners.ToArray();
         }
 
-        public void Encounter<TEvent>(TEvent theEvent)
+        public Task Encounter<TEvent>(TEvent theEvent)
         {
             var sceneActor = new SceneActor(_context);
-            foreach (var listener in _listeners)
-            {
-                listener(theEvent, sceneActor);
-            }
+
+            var tasks = from listener in _listeners
+                        select listener(theEvent, sceneActor);
+
+            return TaskEx.WhenAll(tasks);
         }
 
         public PlotBuilder CreateNestedBuilder()
