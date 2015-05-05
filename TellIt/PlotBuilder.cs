@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace TellIt
 {
-    public class PlotBuilder
+    public class PlotTapBuilder : IPlotTap
     {
         private readonly List<Listener> _listeners;
 
-        public PlotBuilder()
+        public PlotTapBuilder()
             : this(new Listener[0])
         {
         }
 
-        internal PlotBuilder(IEnumerable<Listener> listeners)
+        internal PlotTapBuilder(IEnumerable<Listener> listeners)
         {
             _listeners = listeners.ToList();
         }

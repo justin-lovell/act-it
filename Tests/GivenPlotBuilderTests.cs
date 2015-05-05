@@ -12,7 +12,7 @@ namespace TellIt
         [Test]
         public void WhenCreatedNewInstanceItShouldBeAbleToGenerateStoryInstance()
         {
-            var builder = new PlotBuilder();
+            var builder = new PlotTapBuilder();
 
             var story = builder.GenerateStory();
 
@@ -22,7 +22,7 @@ namespace TellIt
         [Test]
         public void WhenEnrolledListener()
         {
-            var builder = new PlotBuilder();
+            var builder = new PlotTapBuilder();
 
             builder.Listen<TestClassA>((a, actor) => { });
         }

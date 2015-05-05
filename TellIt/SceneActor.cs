@@ -19,7 +19,7 @@ namespace TellIt
             return _context.GetCurrentInstanceOrCreateNew<T>();
         }
 
-        public Task Interrupt<TEvent>(TEvent nestedEvent)
+        public Task Interrupt<TEvent>(TEvent nestedEvent, Action<IPlotTap> tapCallback = null)
         {
             return _initiateEncounterFunc(nestedEvent, this);
         }

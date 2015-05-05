@@ -28,9 +28,9 @@ namespace TellIt
             return TaskEx.WhenAll(tasks);
         }
 
-        public PlotBuilder CreateNestedBuilder()
+        public PlotTapBuilder CreateNestedBuilder()
         {
-            return new PlotBuilder(_listeners);
+            return new PlotTapBuilder(_listeners);
         }
     }
 }

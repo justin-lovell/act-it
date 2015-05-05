@@ -25,7 +25,7 @@ namespace TellIt
             var checkpoints = new List<int>();
 
             // arrange
-            var builder = new PlotBuilder();
+            var builder = new PlotTapBuilder();
 
             builder.Listen<TheEvent>(async (@event, actor) =>
             {
@@ -50,14 +50,14 @@ namespace TellIt
             var checkpoints = new List<int>();
 
             // arrange
-            var builder = new PlotBuilder();
+            var builder = new PlotTapBuilder();
 
             builder.Listen<TheEvent>(async (@event, actor) =>
             {
                 checkpoints.Add(1);
                 await actor.Interrupt(new TheSecondEvent(),
-                                      enrollment =>
-                                      enrollment.Listen<TheSecondEvent>((a, b) => checkpoints.Add(3))
+                                      tap =>
+                                      tap.Listen<TheSecondEvent>((a, b) => checkpoints.Add(3))
                     );
                 checkpoints.Add(4);
             });
@@ -78,7 +78,7 @@ namespace TellIt
             TheContext theContext = null;
 
             // arrange
-            var builder = new PlotBuilder();
+            var builder = new PlotTapBuilder();
 
             builder.Listen<TheEvent>((@event, busSchedule) =>
                                      theContext = busSchedule.Context<TheContext>());
@@ -98,7 +98,7 @@ namespace TellIt
             var contexts = new List<TheContext>();
 
             // arrange
-            var builder = new PlotBuilder();
+            var builder = new PlotTapBuilder();
 
             builder.Listen<TheEvent>((@event, busSchedule) =>
                                      contexts.Add(busSchedule.Context<TheContext>()));

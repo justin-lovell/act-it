@@ -17,7 +17,7 @@ namespace TellIt
             var wasCalled = false;
 
             // arrange
-            var builder = new PlotBuilder();
+            var builder = new PlotTapBuilder();
 
             var story = builder.GenerateStory();
             builder.Listen<TheEvent>((@event, busSchedule) => wasCalled = true);
