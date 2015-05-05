@@ -42,6 +42,34 @@ namespace TellIt
         }
 
         [Test]
+        public async Task WhenCreatingFactoryItShouldRespondToEventsAsync()
+        {
+            // tracker
+            var wasCalled = false;
+            TheEvent theEventInstance = null;
+
+            var theExpectedEventInstance = new TheEvent();
+
+            // arrange
+            var builder = new PlotBuilder();
+            builder.Listen<TheEvent>(async (@event, actor) =>
+            {
+                theEventInstance = @event;
+                await Task.Delay(20);
+                wasCalled = true;
+            });
+
+
+            // act
+            var factory = builder.GenerateStory();
+            await factory.Encounter(theExpectedEventInstance);
+
+            // assert
+            Assert.That(wasCalled, Is.True);
+            Assert.That(theEventInstance, Is.SameAs(theExpectedEventInstance));
+        }
+
+        [Test]
         public async Task WhenListeningToEventsItShouldNotRespondToWhichItWasNotListeningTo()
         {
             // track
