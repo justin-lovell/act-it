@@ -45,11 +45,11 @@ namespace ActIt
             var innerStory = innerPlot.GenerateStory();
 
             return innerStory.Encounter(theEvent)
-                .ContinueWith(task =>
-                {
-                    var replayHub = new ReplayNotificationHub(eventsThatOccurred);
-                    tapCallback(replayHub);
-                });
+                             .ContinueWith(task =>
+                             {
+                                 var replayHub = new ReplayNotificationHub(eventsThatOccurred);
+                                 tapCallback(replayHub);
+                             });
         }
 
         public Task Interrupt<TEvent>(TEvent theEvent)
