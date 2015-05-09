@@ -15,10 +15,10 @@ namespace ActIt
             _listeners = listeners.ToArray();
         }
 
-        public Task Encounter<TEvent>(TEvent theEvent)
+        public Task EncounterAsync<TEvent>(TEvent theEvent)
         {
             var sceneActor = new SceneActor(_listeners, _context);
-            return sceneActor.Interrupt(theEvent);
+            return sceneActor.InterruptAsync(theEvent);
         }
 
         public PlotBuilder CreateNestedBuilder()

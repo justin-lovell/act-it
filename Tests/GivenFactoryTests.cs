@@ -26,7 +26,7 @@ namespace ActIt
             var factory2 = builder2.GenerateStory();
 
             // act
-            await factory2.Encounter(new TheEvent());
+            await factory2.EncounterAsync(new TheEvent());
 
             // assert
             Assert.That(wasCalled1, Is.True);

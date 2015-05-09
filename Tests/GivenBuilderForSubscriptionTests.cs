@@ -34,7 +34,7 @@ namespace ActIt
 
             // act
             var factory = builder.GenerateStory();
-            await factory.Encounter(theExpectedEventInstance);
+            await factory.EncounterAsync(theExpectedEventInstance);
 
             // assert
             Assert.That(wasCalled, Is.True);
@@ -62,7 +62,7 @@ namespace ActIt
 
             // act
             var factory = builder.GenerateStory();
-            await factory.Encounter(theExpectedEventInstance);
+            await factory.EncounterAsync(theExpectedEventInstance);
 
             // assert
             Assert.That(wasCalled, Is.True);
@@ -81,7 +81,7 @@ namespace ActIt
 
             // act
             var factory = builder.GenerateStory();
-            await factory.Encounter(new TheOtherEvent());
+            await factory.EncounterAsync(new TheOtherEvent());
 
             // assert
             Assert.That(wasCalled, Is.False);
@@ -99,7 +99,7 @@ namespace ActIt
 
             // act
             var factory = builder.GenerateStory();
-            await factory.Encounter(new TheEvent());
+            await factory.EncounterAsync(new TheEvent());
 
             // assert
             Assert.That(wasCalled, Is.False);

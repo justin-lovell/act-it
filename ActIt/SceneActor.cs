@@ -21,11 +21,11 @@ namespace ActIt
             return _context.GetCurrentInstanceOrCreateNew<T>();
         }
 
-        public Task Interrupt<TEvent>(TEvent theEvent, Action<ReplayNotificationHub> tapCallback)
+        public Task InterruptAsync<TEvent>(TEvent theEvent, Action<ReplayNotificationHub> tapCallback)
         {
             if (tapCallback == null)
             {
-                return Interrupt(theEvent);
+                return InterruptAsync(theEvent);
             }
 
             var historicalEvents = new List<object>();
@@ -33,7 +33,7 @@ namespace ActIt
 
             var nestedScene = new SceneActor(listeners, _context);
 
-            return nestedScene.Interrupt(theEvent)
+            return nestedScene.InterruptAsync(theEvent)
                               .ContinueWith(task =>
                               {
                                   var replayHub = new ReplayNotificationHub(historicalEvents);
@@ -58,7 +58,7 @@ namespace ActIt
             return listeners;
         }
 
-        public Task Interrupt<TEvent>(TEvent theEvent)
+        public Task InterruptAsync<TEvent>(TEvent theEvent)
         {
             var tasks = from listener in _listeners
                         select listener(theEvent, this);
