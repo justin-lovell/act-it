@@ -32,12 +32,19 @@ namespace ActIt
 
             Listener temporaryListener = (@event, actor) =>
             {
-                eventsThatOccurred.Add(@event);
+                if (!ReferenceEquals(theEvent, @event))
+                {
+                    eventsThatOccurred.Add(@event);
+                }
+
                 return TaskEx.IntoTaskResult<object>(null);
             };
             var listeners = _listeners.Concat(new[] {temporaryListener});
 
-            return ExecuteInterruption(theEvent, listeners)
+            var innerPlot = new PlotBuilder(listeners, _context);
+            var innerStory = innerPlot.GenerateStory();
+
+            return innerStory.Encounter(theEvent)
                 .ContinueWith(task =>
                 {
                     var replayHub = new ReplayNotificationHub(eventsThatOccurred);
@@ -47,12 +54,7 @@ namespace ActIt
 
         public Task Interrupt<TEvent>(TEvent theEvent)
         {
-            return ExecuteInterruption(theEvent, _listeners);
-        }
-
-        private Task ExecuteInterruption<TEvent>(TEvent theEvent, IEnumerable<Listener> listeners)
-        {
-            var tasks = from listener in listeners
+            var tasks = from listener in _listeners
                         select listener(theEvent, this);
 
             return TaskEx.WhenAll(tasks);

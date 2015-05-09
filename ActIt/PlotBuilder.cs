@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ActIt
 {
-    public class PlotBuilder : IPlotTap
+    public class PlotBuilder
     {
         private readonly List<Listener> _listeners;
         private readonly StoryContext _context;

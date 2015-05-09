@@ -20,6 +20,10 @@ namespace ActIt
         {
         }
 
+        public class TheThirdEvent
+        {
+        }
+
         [Test]
         public async Task WhenCallingNestedInterruptItShouldCascadeInCallingOrder()
         {
@@ -46,6 +50,28 @@ namespace ActIt
         }
 
         [Test]
+        public async Task WhenCallingNestedInterruptWithListenerItShouldNotListenToOwnEcho()
+        {
+            var wasOwnEchoHeard = false;
+
+            // arrange
+            var builder = new PlotBuilder();
+
+            builder.Listen<TheEvent>((@event, actor) =>
+            {
+                actor.Interrupt(new TheSecondEvent(),
+                                tap => wasOwnEchoHeard = tap.ReplayEvents<TheSecondEvent>().Any());
+            });
+
+            // act
+            var story = builder.GenerateStory();
+            await story.Encounter(new TheEvent());
+
+            // assert
+            Assert.That(wasOwnEchoHeard, Is.False);
+        }
+
+        [Test]
         public async Task WhenCallingNestedInterruptWithListenersItShouldCascadeInRegistrationOrder()
         {
             var checkpoints = new List<int>();
@@ -53,20 +79,24 @@ namespace ActIt
             // arrange
             var builder = new PlotBuilder();
 
-            builder.Listen<TheEvent>((@event, actor) =>
+            builder.Listen<TheEvent>(async (@event, actor) =>
             {
                 checkpoints.Add(1);
-                actor.Interrupt(new TheSecondEvent(),
+                await actor.Interrupt(new TheSecondEvent(),
                                 tap =>
                                 {
-                                    if (tap.ReplayEvents<TheSecondEvent>().Count() == 1)
+                                    if (tap.ReplayEvents<TheThirdEvent>().Count() == 1)
                                     {
                                         checkpoints.Add(3);
                                     }
                                 });
                 checkpoints.Add(4);
             });
-            builder.Listen<TheSecondEvent>((@event, actor) => checkpoints.Add(2));
+            builder.Listen<TheSecondEvent>(async (@event, actor) =>
+            {
+                await actor.Interrupt(new TheThirdEvent());
+                checkpoints.Add(2);
+            });
 
             // act
             var story = builder.GenerateStory();
