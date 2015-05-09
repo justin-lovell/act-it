@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TellIt
+namespace ActIt
 {
     internal sealed class StoryContext
     {

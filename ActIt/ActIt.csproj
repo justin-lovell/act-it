@@ -7,8 +7,8 @@
     <ProjectGuid>{9633F818-8265-47BF-8F09-B6AEFFA048E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TellIt</RootNamespace>
-    <AssemblyName>TellIt</AssemblyName>
+    <RootNamespace>ActIt</RootNamespace>
+    <AssemblyName>ActIt</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

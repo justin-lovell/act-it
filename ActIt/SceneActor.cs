@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TellIt
+namespace ActIt
 {
-    public class SceneActor
+    public sealed class SceneActor
     {
         private readonly IEnumerable<Listener> _listeners;
         private readonly StoryContext _context;
@@ -21,18 +21,20 @@ namespace TellIt
             return _context.GetCurrentInstanceOrCreateNew<T>();
         }
 
-        public Task Interrupt<TEvent>(TEvent theEvent, Action<IPlotTap> tapCallback = null)
+        public Task Interrupt<TEvent>(TEvent theEvent, Action<IPlotTap> tapCallback)
         {
-            if (tapCallback != null)
-            {
-                var nestedPlotBuilder = new PlotBuilder(_listeners, _context);
+            // all of these API calls need to be taken away
 
-                tapCallback(nestedPlotBuilder);
+            var nestedPlotBuilder = new PlotBuilder(_listeners, _context);
 
-                var nestedStory = nestedPlotBuilder.GenerateStory();
-                return nestedStory.Encounter(theEvent);
-            }
+            tapCallback(nestedPlotBuilder);
 
+            var nestedStory = nestedPlotBuilder.GenerateStory();
+            return nestedStory.Encounter(theEvent);
+        }
+
+        public Task Interrupt<TEvent>(TEvent theEvent)
+        {
             var tasks = from listener in _listeners
                         select listener(theEvent, this);
 

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace TellIt
+namespace ActIt
 {
     [TestFixture]
     public class GivenBuilderForSubscriptionTests

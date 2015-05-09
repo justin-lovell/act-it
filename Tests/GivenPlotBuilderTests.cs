@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace TellIt
+namespace ActIt
 {
     [TestFixture]
     public class GivenPlotBuilderTests

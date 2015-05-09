@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace TellIt
+namespace ActIt
 {
     public interface IPlotTap
     {
