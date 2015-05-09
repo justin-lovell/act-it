@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -52,13 +53,17 @@ namespace ActIt
             // arrange
             var builder = new PlotBuilder();
 
-            builder.Listen<TheEvent>(async (@event, actor) =>
+            builder.Listen<TheEvent>((@event, actor) =>
             {
                 checkpoints.Add(1);
-                await actor.Interrupt(new TheSecondEvent(),
-                                      tap =>
-                                      tap.Listen<TheSecondEvent>((a, b) => checkpoints.Add(3))
-                    );
+                actor.Interrupt(new TheSecondEvent(),
+                                tap =>
+                                {
+                                    if (tap.ReplayEvents<TheSecondEvent>().Count() == 1)
+                                    {
+                                        checkpoints.Add(3);
+                                    }
+                                });
                 checkpoints.Add(4);
             });
             builder.Listen<TheSecondEvent>((@event, actor) => checkpoints.Add(2));

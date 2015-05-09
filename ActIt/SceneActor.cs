@@ -7,8 +7,8 @@ namespace ActIt
 {
     public sealed class SceneActor
     {
-        private readonly IEnumerable<Listener> _listeners;
         private readonly StoryContext _context;
+        private readonly IEnumerable<Listener> _listeners;
 
         internal SceneActor(IEnumerable<Listener> listeners, StoryContext context)
         {
@@ -21,21 +21,38 @@ namespace ActIt
             return _context.GetCurrentInstanceOrCreateNew<T>();
         }
 
-        public Task Interrupt<TEvent>(TEvent theEvent, Action<IPlotTap> tapCallback)
+        public Task Interrupt<TEvent>(TEvent theEvent, Action<ReplayNotificationHub> tapCallback)
         {
-            // all of these API calls need to be taken away
+            if (tapCallback == null)
+            {
+                return Interrupt(theEvent);
+            }
 
-            var nestedPlotBuilder = new PlotBuilder(_listeners, _context);
+            var eventsThatOccurred = new List<object>();
 
-            tapCallback(nestedPlotBuilder);
+            Listener temporaryListener = (@event, actor) =>
+            {
+                eventsThatOccurred.Add(@event);
+                return TaskEx.IntoTaskResult<object>(null);
+            };
+            var listeners = _listeners.Concat(new[] {temporaryListener});
 
-            var nestedStory = nestedPlotBuilder.GenerateStory();
-            return nestedStory.Encounter(theEvent);
+            return ExecuteInterruption(theEvent, listeners)
+                .ContinueWith(task =>
+                {
+                    var replayHub = new ReplayNotificationHub(eventsThatOccurred);
+                    tapCallback(replayHub);
+                });
         }
 
         public Task Interrupt<TEvent>(TEvent theEvent)
         {
-            var tasks = from listener in _listeners
+            return ExecuteInterruption(theEvent, _listeners);
+        }
+
+        private Task ExecuteInterruption<TEvent>(TEvent theEvent, IEnumerable<Listener> listeners)
+        {
+            var tasks = from listener in listeners
                         select listener(theEvent, this);
 
             return TaskEx.WhenAll(tasks);
