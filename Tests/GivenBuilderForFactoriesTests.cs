@@ -23,7 +23,7 @@ namespace ActIt
             builder.Listen<TheEvent>((@event, busSchedule) => wasCalled = true);
 
             // act
-            await story.Encounter(new TheEvent());
+            await story.EncounterAsync(new TheEvent());
 
             // assert
             Assert.That(wasCalled, Is.False);

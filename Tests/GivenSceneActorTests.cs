@@ -35,14 +35,14 @@ namespace ActIt
             builder.Listen<TheEvent>(async (@event, actor) =>
             {
                 checkpoints.Add(1);
-                await actor.Interrupt(new TheSecondEvent());
+                await actor.InterruptAsync(new TheSecondEvent());
                 checkpoints.Add(3);
             });
             builder.Listen<TheSecondEvent>((@event, actor) => checkpoints.Add(2));
 
             // act
             var story = builder.GenerateStory();
-            await story.Encounter(new TheEvent());
+            await story.EncounterAsync(new TheEvent());
 
             // assert
             Assert.That(checkpoints.Count, Is.EqualTo(3));
@@ -59,13 +59,13 @@ namespace ActIt
 
             builder.Listen<TheEvent>((@event, actor) =>
             {
-                actor.Interrupt(new TheSecondEvent(),
+                actor.InterruptAsync(new TheSecondEvent(),
                                 tap => wasOwnEchoHeard = tap.ReplayEvents<TheSecondEvent>().Any());
             });
 
             // act
             var story = builder.GenerateStory();
-            await story.Encounter(new TheEvent());
+            await story.EncounterAsync(new TheEvent());
 
             // assert
             Assert.That(wasOwnEchoHeard, Is.False);
@@ -82,7 +82,7 @@ namespace ActIt
             builder.Listen<TheEvent>(async (@event, actor) =>
             {
                 checkpoints.Add(1);
-                await actor.Interrupt(new TheSecondEvent(),
+                await actor.InterruptAsync(new TheSecondEvent(),
                                 tap =>
                                 {
                                     if (tap.ReplayEvents<TheThirdEvent>().Count() == 1)
@@ -94,13 +94,13 @@ namespace ActIt
             });
             builder.Listen<TheSecondEvent>(async (@event, actor) =>
             {
-                await actor.Interrupt(new TheThirdEvent());
+                await actor.InterruptAsync(new TheThirdEvent());
                 checkpoints.Add(2);
             });
 
             // act
             var story = builder.GenerateStory();
-            await story.Encounter(new TheEvent());
+            await story.EncounterAsync(new TheEvent());
 
             // assert
             Assert.That(checkpoints.Count, Is.EqualTo(4));
@@ -121,7 +121,7 @@ namespace ActIt
             var story = builder.GenerateStory();
 
             // act
-            await story.Encounter(new TheEvent());
+            await story.EncounterAsync(new TheEvent());
 
             // assert
             Assert.That(theContext, Is.Not.Null);
@@ -141,8 +141,8 @@ namespace ActIt
             var story = builder.GenerateStory();
 
             // act
-            await story.Encounter(new TheEvent());
-            await story.Encounter(new TheEvent());
+            await story.EncounterAsync(new TheEvent());
+            await story.EncounterAsync(new TheEvent());
 
             // assert
             Assert.That(contexts.Count, Is.EqualTo(2));
