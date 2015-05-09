@@ -28,8 +28,23 @@ namespace ActIt
                 return Interrupt(theEvent);
             }
 
-            var eventsThatOccurred = new List<object>();
+            var historicalEvents = new List<object>();
+            var listeners = PipeEventsToHistoryRecounter(theEvent, historicalEvents);
 
+            var nestedScene = new SceneActor(listeners, _context);
+
+            return nestedScene.Interrupt(theEvent)
+                              .ContinueWith(task =>
+                              {
+                                  var replayHub = new ReplayNotificationHub(historicalEvents);
+                                  tapCallback(replayHub);
+                              });
+        }
+
+        private IEnumerable<Listener> PipeEventsToHistoryRecounter<TEvent>(
+            TEvent theEvent,
+            List<object> eventsThatOccurred)
+        {
             Listener temporaryListener = (@event, actor) =>
             {
                 if (!ReferenceEquals(theEvent, @event))
@@ -40,16 +55,7 @@ namespace ActIt
                 return TaskEx.IntoTaskResult<object>(null);
             };
             var listeners = _listeners.Concat(new[] {temporaryListener});
-
-            var innerPlot = new PlotBuilder(listeners, _context);
-            var innerStory = innerPlot.GenerateStory();
-
-            return innerStory.Encounter(theEvent)
-                             .ContinueWith(task =>
-                             {
-                                 var replayHub = new ReplayNotificationHub(eventsThatOccurred);
-                                 tapCallback(replayHub);
-                             });
+            return listeners;
         }
 
         public Task Interrupt<TEvent>(TEvent theEvent)
