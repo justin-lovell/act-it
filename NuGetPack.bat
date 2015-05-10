@@ -1,0 +1,1 @@
+.\.nuget\NuGet.exe pack .\ActIt\ActIt.csproj -Build -Prop Configuration=Release

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>0.5.1.0</version>
+    <title>$title$</title>
+    <authors>Justin Lovell</authors>
+    <owners>Justin Lovell</owners>
+    <licenseUrl>https://github.com/justin-lovell/act-it/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/justin-lovell/act-it</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Tell, don't ask. The principle that should be driving your API design</description>
+    <copyright>Copyright 2015 Justin Lovell</copyright>
+  </metadata>
+</package>
