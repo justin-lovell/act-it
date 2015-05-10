@@ -24,6 +24,13 @@ namespace ActIt
         {
         }
 
+        private class TheCtorContext
+        {
+            public TheCtorContext(int i)
+            {
+            }
+        }
+
         [Test]
         public async Task WhenCallingNestedInterruptItShouldCascadeInCallingOrder()
         {
@@ -60,7 +67,7 @@ namespace ActIt
             builder.Listen<TheEvent>((@event, actor) =>
             {
                 actor.InterruptAsync(new TheSecondEvent(),
-                                tap => wasOwnEchoHeard = tap.ReplayEvents<TheSecondEvent>().Any());
+                                     tap => wasOwnEchoHeard = tap.ReplayEvents<TheSecondEvent>().Any());
             });
 
             // act
@@ -83,13 +90,13 @@ namespace ActIt
             {
                 checkpoints.Add(1);
                 await actor.InterruptAsync(new TheSecondEvent(),
-                                tap =>
-                                {
-                                    if (tap.ReplayEvents<TheThirdEvent>().Count() == 1)
-                                    {
-                                        checkpoints.Add(3);
-                                    }
-                                });
+                                           tap =>
+                                           {
+                                               if (tap.ReplayEvents<TheThirdEvent>().Count() == 1)
+                                               {
+                                                   checkpoints.Add(3);
+                                               }
+                                           });
                 checkpoints.Add(4);
             });
             builder.Listen<TheSecondEvent>(async (@event, actor) =>
@@ -105,6 +112,27 @@ namespace ActIt
             // assert
             Assert.That(checkpoints.Count, Is.EqualTo(4));
             Assert.That(checkpoints, Is.Ordered);
+        }
+
+        [Test]
+        public async Task WhenRequestedContextAndUserCodeGeneratesNewInstanceItShouldReturnNewInstance()
+        {
+            var targetContext = new TheCtorContext(1);
+            TheCtorContext capturedContext = null;
+
+            // arrange
+            var builder = new PlotBuilder();
+
+            builder.Listen<TheEvent>((@event, busSchedule) =>
+                                     capturedContext = busSchedule.Context(() => targetContext));
+
+            var story = builder.GenerateStory();
+
+            // act
+            await story.EncounterAsync(new TheEvent());
+
+            // assert
+            Assert.That(capturedContext, Is.SameAs(targetContext));
         }
 
         [Test]
@@ -137,6 +165,28 @@ namespace ActIt
 
             builder.Listen<TheEvent>((@event, busSchedule) =>
                                      contexts.Add(busSchedule.Context<TheContext>()));
+
+            var story = builder.GenerateStory();
+
+            // act
+            await story.EncounterAsync(new TheEvent());
+            await story.EncounterAsync(new TheEvent());
+
+            // assert
+            Assert.That(contexts.Count, Is.EqualTo(2));
+            Assert.That(contexts[0], Is.SameAs(contexts[1]));
+        }
+
+        [Test]
+        public async Task WhenRequestedContextWithUserGeneratedCodeTwiceItShouldReturnTheSameInstance()
+        {
+            var contexts = new List<TheCtorContext>();
+
+            // arrange
+            var builder = new PlotBuilder();
+
+            builder.Listen<TheEvent>((@event, busSchedule) =>
+                                     contexts.Add(busSchedule.Context(() => new TheCtorContext(2))));
 
             var story = builder.GenerateStory();
 

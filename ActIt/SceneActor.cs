@@ -21,6 +21,11 @@ namespace ActIt
             return _context.GetCurrentInstanceOrCreateNew<T>();
         }
 
+        public T Context<T>(Func<T> createNewInstance)
+        {
+            return _context.GetCurrentInstanceOrCreateInstance(createNewInstance);
+        }
+
         public Task InterruptAsync<TEvent>(TEvent theEvent, Action<ReplayNotificationHub> tapCallback)
         {
             if (tapCallback == null)
