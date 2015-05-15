@@ -14,10 +14,7 @@ namespace ActIt
 
         public IEnumerable<T> ReplayEvents<T>() where T : class
         {
-            return from ev in _eventsThatOccurred
-                   let interestedEvent = ev as T
-                   where interestedEvent != null
-                   select interestedEvent;
+            return _eventsThatOccurred.OfType<T>();
         }
     }
 }
