@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ActIt
 {
-    public class PlotBuilder
+    public sealed class PlotBuilder
     {
         private readonly List<Listener> _listeners;
         private readonly StoryContext _context;
@@ -26,7 +26,7 @@ namespace ActIt
             return new StoryFactory(_listeners, _context);
         }
 
-        public void Listen<T>(Action<T, SceneActor> callbackFunc) where T : class
+        public void Listen<T>(Action<T, SceneActor> callbackAction) where T : class
         {
             Listener listener = (@event, actor) =>
             {
@@ -34,7 +34,7 @@ namespace ActIt
 
                 if (o != null)
                 {
-                    callbackFunc(o, actor);
+                    callbackAction(o, actor);
                 }
 
                 return TaskEx.IntoTaskResult<object>(null);
@@ -52,6 +52,22 @@ namespace ActIt
                            ? callbackFunc(o, actor)
                            : TaskEx.IntoTaskResult<object>(null);
             };
+            _listeners.Add(listener);
+        }
+
+        public void EavesDrop(Action<object, SceneActor> callbackAction)
+        {
+            Listener listener = (@event, actor) =>
+            {
+                callbackAction(@event, actor);
+                return TaskEx.IntoTaskResult<object>(null);
+            };
+            _listeners.Add(listener);
+        }
+
+        public void EavesDrop(Func<object, SceneActor, Task> callbackFunc)
+        {
+            Listener listener = (@event, actor) => callbackFunc(@event, actor);
             _listeners.Add(listener);
         }
     }

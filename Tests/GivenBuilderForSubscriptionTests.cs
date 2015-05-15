@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace ActIt
@@ -103,6 +104,58 @@ namespace ActIt
 
             // assert
             Assert.That(wasCalled, Is.False);
+        }
+
+        [Test]
+        public async Task WhenEavesDroppingItShouldTakeNoteOfAllEvents()
+        {
+            // tracker
+            var event1 = new TheEvent();
+            var event2 = new TheOtherEvent();
+
+            var encounteredEvents = new List<object>();
+
+            // arrange
+            var builder = new PlotBuilder();
+            builder.EavesDrop((@event, busSchedule) => encounteredEvents.Add(@event));
+
+            // act
+            var factory = builder.GenerateStory();
+            await factory.EncounterAsync(event1);
+            await factory.EncounterAsync(event2);
+
+            // assert
+            Assert.That(encounteredEvents.Count, Is.EqualTo(2));
+            Assert.That(encounteredEvents, Has.Member(event1));
+            Assert.That(encounteredEvents, Has.Member(event2));
+        }
+
+        [Test]
+        public async Task WhenAsyncEavesDroppingItShouldTakeNoteOfAllEvents()
+        {
+            // tracker
+            var event1 = new TheEvent();
+            var event2 = new TheOtherEvent();
+
+            var encounteredEvents = new List<object>();
+
+            // arrange
+            var builder = new PlotBuilder();
+            builder.EavesDrop(async (@event, busSchedule) =>
+            {
+                encounteredEvents.Add(@event);
+                await Task.Delay(1);
+            });
+
+            // act
+            var factory = builder.GenerateStory();
+            await factory.EncounterAsync(event1);
+            await factory.EncounterAsync(event2);
+
+            // assert
+            Assert.That(encounteredEvents.Count, Is.EqualTo(2));
+            Assert.That(encounteredEvents, Has.Member(event1));
+            Assert.That(encounteredEvents, Has.Member(event2));
         }
     }
 }

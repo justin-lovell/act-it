@@ -18,11 +18,10 @@ namespace ActIt
 
             // arrange
             var builder = new PlotBuilder();
-
             var story = builder.GenerateStory();
-            builder.Listen<TheEvent>((@event, busSchedule) => wasCalled = true);
 
             // act
+            builder.Listen<TheEvent>((@event, busSchedule) => wasCalled = true);
             await story.EncounterAsync(new TheEvent());
 
             // assert
