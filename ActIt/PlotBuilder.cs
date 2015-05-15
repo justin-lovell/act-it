@@ -8,22 +8,20 @@ namespace ActIt
     public sealed class PlotBuilder
     {
         private readonly List<Listener> _listeners;
-        private readonly StoryContext _context;
 
         public PlotBuilder()
-            : this(new Listener[0], new StoryContext())
+            : this(new Listener[0])
         {
         }
 
-        internal PlotBuilder(IEnumerable<Listener> listeners, StoryContext context)
+        internal PlotBuilder(IEnumerable<Listener> listeners)
         {
-            _context = context;
             _listeners = listeners.ToList();
         }
 
         public StoryFactory GenerateStory()
         {
-            return new StoryFactory(_listeners, _context);
+            return new StoryFactory(_listeners);
         }
 
         public void Listen<T>(Action<T, SceneActor> callbackAction) where T : class

@@ -6,12 +6,11 @@ namespace ActIt
 {
     public sealed class StoryFactory
     {
-        private readonly StoryContext _context;
+        private readonly StoryContext _context = new StoryContext();
         private readonly IEnumerable<Listener> _listeners;
 
-        internal StoryFactory(IEnumerable<Listener> listeners, StoryContext context)
+        internal StoryFactory(IEnumerable<Listener> listeners)
         {
-            _context = context ?? new StoryContext();
             _listeners = listeners.ToArray();
         }
 
@@ -23,7 +22,7 @@ namespace ActIt
 
         public PlotBuilder CreateNestedBuilder()
         {
-            return new PlotBuilder(_listeners, _context);
+            return new PlotBuilder(_listeners);
         }
     }
 }
