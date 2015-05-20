@@ -67,7 +67,7 @@ namespace ActIt
             builder.Listen<TheEvent>((@event, actor) =>
             {
                 actor.InterruptAsync(new TheSecondEvent(),
-                                     tap => wasOwnEchoHeard = tap.ReplayEvents<TheSecondEvent>().Any());
+                                     hub => wasOwnEchoHeard = hub.ReplayEvents<TheSecondEvent>().Any());
             });
 
             // act
@@ -90,9 +90,9 @@ namespace ActIt
             {
                 checkpoints.Add(1);
                 await actor.InterruptAsync(new TheSecondEvent(),
-                                           tap =>
+                                           hub =>
                                            {
-                                               if (tap.ReplayEvents<TheThirdEvent>().Count() == 1)
+                                               if (hub.ReplayEvents<TheThirdEvent>().Count() == 1)
                                                {
                                                    checkpoints.Add(3);
                                                }
@@ -123,8 +123,8 @@ namespace ActIt
             // arrange
             var builder = new PlotBuilder();
 
-            builder.Listen<TheEvent>((@event, busSchedule) =>
-                                     capturedContext = busSchedule.Context(() => targetContext));
+            builder.Listen<TheEvent>((@event, actor) =>
+                                     capturedContext = actor.Context(() => targetContext));
 
             var story = builder.GenerateStory();
 
@@ -143,8 +143,8 @@ namespace ActIt
             // arrange
             var builder = new PlotBuilder();
 
-            builder.Listen<TheEvent>((@event, busSchedule) =>
-                                     theContext = busSchedule.Context<TheContext>());
+            builder.Listen<TheEvent>((@event, actor) =>
+                                     theContext = actor.Context<TheContext>());
 
             var story = builder.GenerateStory();
 
@@ -163,8 +163,8 @@ namespace ActIt
             // arrange
             var builder = new PlotBuilder();
 
-            builder.Listen<TheEvent>((@event, busSchedule) =>
-                                     contexts.Add(busSchedule.Context<TheContext>()));
+            builder.Listen<TheEvent>((@event, actor) =>
+                                     contexts.Add(actor.Context<TheContext>()));
 
             var story = builder.GenerateStory();
 
@@ -185,8 +185,8 @@ namespace ActIt
             // arrange
             var builder = new PlotBuilder();
 
-            builder.Listen<TheEvent>((@event, busSchedule) =>
-                                     contexts.Add(busSchedule.Context(() => new TheCtorContext(2))));
+            builder.Listen<TheEvent>((@event, actor) =>
+                                     contexts.Add(actor.Context(() => new TheCtorContext(2))));
 
             var story = builder.GenerateStory();
 
