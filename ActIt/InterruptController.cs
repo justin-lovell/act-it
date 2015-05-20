@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,15 +16,20 @@ namespace ActIt
             _sceneActor = sceneActor;
         }
 
-        public Task<T> SingleResult<T>() where T : class
+        public Task<IEnumerable<T>> ObservingForEvents<T>() where T : class
         {
-            var capturedResult = default(T);
+            IEnumerable<T> observingFor = null;
 
             Action<ReplayNotificationHub> tapCallback =
-                hub => capturedResult = hub.ReplayEvents<T>().Single();
+                hub => observingFor = hub.ReplayEvents<T>();
 
             return _sceneActor.InterruptAsync(_theEvent, tapCallback)
-                              .ContinueWith(task => capturedResult);
+                              .ContinueWith(task =>
+                              {
+                                  IEnumerable<T> enumerable =
+                                      observingFor as T[] ?? observingFor.ToArray();
+                                  return enumerable;
+                              });
         }
     }
 }

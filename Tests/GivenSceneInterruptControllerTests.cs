@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace ActIt
@@ -30,8 +31,8 @@ namespace ActIt
 
             // act
             var story = plotBuilder.GenerateStory();
-            var result = await story.EncounterAndControlAsync(new TheEvent())
-                                    .SingleResult<TheSecondEvent>();
+            var result = (await story.EncounterAndControlAsync(new TheEvent())
+                                     .ObservingForEvents<TheSecondEvent>()).Single();
 
             // assert
             Assert.That(result, Is.SameAs(secondEvent));
@@ -47,8 +48,9 @@ namespace ActIt
             var plotBuilder = new PlotBuilder();
 
             plotBuilder.Listen<TheEvent>(async (@event, actor) =>
-                                         receivedThirdEvent = await actor.InterruptAndControlAsync(new TheSecondEvent())
-                                                                         .SingleResult<TheThirdEvent>()
+                                         receivedThirdEvent =
+                                         (await actor.InterruptAndControlAsync(new TheSecondEvent())
+                                                     .ObservingForEvents<TheThirdEvent>()).Single()
                 );
             plotBuilder.Listen<TheSecondEvent>((@event, actor) => actor.InterruptAsync(thirdEvent));
 
