@@ -36,6 +36,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IInterruptController.cs" />
+    <Compile Include="InterruptController.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="ReplayNotificationHub.cs" />
     <Compile Include="SceneActor.cs" />

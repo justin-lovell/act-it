@@ -49,6 +49,7 @@
     <Compile Include="GivenBuilderForSubscriptionTests.cs" />
     <Compile Include="GivenFactoryTests.cs" />
     <Compile Include="GivenPlotBuilderTests.cs" />
+    <Compile Include="GivenSceneInterruptControllerTests.cs" />
     <Compile Include="GivenSceneActorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

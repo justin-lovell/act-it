@@ -16,11 +16,11 @@ namespace ActIt
         {
         }
 
-        public class TheSecondEvent
+        private class TheSecondEvent
         {
         }
 
-        public class TheThirdEvent
+        private class TheThirdEvent
         {
         }
 

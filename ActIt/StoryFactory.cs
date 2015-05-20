@@ -16,13 +16,24 @@ namespace ActIt
 
         public Task EncounterAsync<TEvent>(TEvent theEvent)
         {
-            var sceneActor = new SceneActor(_listeners, _context);
+            var sceneActor = CreateNewSceneActor();
             return sceneActor.InterruptAsync(theEvent);
+        }
+
+        private SceneActor CreateNewSceneActor()
+        {
+            return new SceneActor(_listeners, _context);
         }
 
         public PlotBuilder CreateNestedBuilder()
         {
             return new PlotBuilder(_listeners);
+        }
+
+        public IInterruptController EncounterAndControlAsync<TEvent>(TEvent theEvent)
+        {
+            var sceneActor = CreateNewSceneActor();
+            return new InterruptController<TEvent>(sceneActor, theEvent);
         }
     }
 }
