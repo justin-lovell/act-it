@@ -1,11 +1,12 @@
-﻿using NUnit.Framework;
+﻿using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace ActIt
 {
     [TestFixture]
     public class GivenPlotBuilderTests
     {
-        public class TestClassA
+        private class TheEvent
         {
         }
 
@@ -24,7 +25,25 @@ namespace ActIt
         {
             var builder = new PlotBuilder();
 
-            builder.Listen<TestClassA>((a, actor) => { });
+            builder.Listen<TheEvent>((a, actor) => { });
+        }
+
+        [Test]
+        public async Task WhenCreatedTheListenersAreImmutableWhenInstanceWasCreated()
+        {
+            // track
+            var wasCalled = false;
+
+            // arrange
+            var builder = new PlotBuilder();
+            var story = builder.GenerateStory();
+
+            // act
+            builder.Listen<TheEvent>((@event, busSchedule) => wasCalled = true);
+            await story.EncounterAsync(new TheEvent());
+
+            // assert
+            Assert.That(wasCalled, Is.False);
         }
     }
 }
