@@ -73,9 +73,9 @@ namespace ActIt
             return TaskEx.WhenAll(tasks);
         }
 
-        public IInterruptAsyncController InterruptAndControlAsync<TEvent>(TEvent theEvent)
+        public IInterruptController InterruptAndControl<TEvent>(TEvent theEvent)
         {
-            return new InterruptAsyncController<TEvent>(this, theEvent);
+            return new InterruptController<TEvent>(this, theEvent);
         }
 
         public void Interrupt<TEvent>(TEvent theEvent)

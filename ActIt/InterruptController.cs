@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 
 namespace ActIt
 {
-    internal class InterruptAsyncController<TEvent> : IInterruptAsyncController
+    internal sealed class InterruptController<TEvent> : IInterruptController
     {
         private readonly SceneActor _sceneActor;
         private readonly TEvent _theEvent;
 
-        public InterruptAsyncController(SceneActor sceneActor, TEvent theEvent)
+        public InterruptController(SceneActor sceneActor, TEvent theEvent)
         {
             _theEvent = theEvent;
             _sceneActor = sceneActor;
         }
 
-        public Task<IEnumerable<T>> ObservingForEvents<T>() where T : class
+        Task<IEnumerable<T>> IInterruptController.ObservingForEventAsync<T>()
         {
             IEnumerable<T> observingFor = null;
 
@@ -32,6 +32,18 @@ namespace ActIt
 
             return _sceneActor.InterruptAsync(_theEvent, tapCallback)
                               .ContinueWith(continuationFunction, TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
+        IEnumerable<T> IInterruptController.ObservingForEvent<T>()
+        {
+            IEnumerable<T> observingFor = null;
+
+            Action<ReplayNotificationHub> tapCallback =
+                hub => observingFor = hub.ReplayEvents<T>();
+
+            _sceneActor.Interrupt(_theEvent, tapCallback);
+
+            return observingFor;
         }
     }
 }
