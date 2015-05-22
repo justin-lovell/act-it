@@ -157,5 +157,6 @@ namespace ActIt
             Assert.That(encounteredEvents, Has.Member(event1));
             Assert.That(encounteredEvents, Has.Member(event2));
         }
+
     }
 }

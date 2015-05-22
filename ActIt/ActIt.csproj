@@ -39,6 +39,8 @@
     <Compile Include="IInterruptController.cs" />
     <Compile Include="InterruptController.cs" />
     <Compile Include="Listener.cs" />
+    <Compile Include="OpenListenExtensionMethods.cs" />
+    <Compile Include="OpenPlotListenerHandler.cs" />
     <Compile Include="ReplayNotificationHub.cs" />
     <Compile Include="SceneActor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

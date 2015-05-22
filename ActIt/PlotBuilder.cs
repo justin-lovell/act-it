@@ -68,5 +68,6 @@ namespace ActIt
             Listener listener = (@event, actor) => callbackFunc(@event, actor);
             _listeners.Add(listener);
         }
+
     }
 }

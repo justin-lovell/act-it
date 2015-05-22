@@ -45,12 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GivenBuilderForFactoriesTests.cs" />
     <Compile Include="GivenBuilderForSubscriptionTests.cs" />
     <Compile Include="GivenFactoryTests.cs" />
     <Compile Include="GivenPlotBuilderTests.cs" />
     <Compile Include="GivenSceneInterruptControllerTests.cs" />
     <Compile Include="GivenSceneActorTests.cs" />
+    <Compile Include="OpenlyListenTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
