@@ -60,7 +60,7 @@ namespace ActIt
 
             // arrange
             var builder = new PlotBuilder();
-            builder.OpenlyListen(typeof (OpenEventHandler<>));
+            builder.OpenlyAsyncListen(typeof (OpenEventHandler<>));
             builder.Listen<HandledEvent>((@event, actor) => encounteredEvents.Add(@event.EventInstance));
 
             // act

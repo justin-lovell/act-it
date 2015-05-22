@@ -49,7 +49,7 @@ namespace ActIt
             return genericMethodInfo;
         }
 
-        public static void OpenlyListen(this PlotBuilder plotBuilder, Type handlerType)
+        public static void OpenlyAsyncListen(this PlotBuilder plotBuilder, Type handlerType)
         {
             if (handlerType == null)
             {
@@ -78,7 +78,7 @@ namespace ActIt
 
                 if (!isInterestingEvent)
                 {
-                    return TaskEx.IntoTaskResult<object>(null);
+                    return null;
                 }
 
                 // todo: 

@@ -59,7 +59,7 @@ namespace ActIt
                     eventsThatOccurred.Add(@event);
                 }
 
-                return TaskEx.IntoTaskResult<object>(null);
+                return null;
             };
             var listeners = _listeners.Concat(new[] {temporaryListener});
             return listeners;

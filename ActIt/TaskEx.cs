@@ -16,7 +16,8 @@ namespace ActIt
                 current.ContinueWith(x => task, TaskContinuationOptions.OnlyOnRanToCompletion)
                        .Unwrap();
 
-            return tasks.Aggregate(currentTask, aggregateFunc);
+            return tasks.Where(_ => _ != null)
+                        .Aggregate(currentTask, aggregateFunc);
         }
 
         public static Task<TResult> IntoTaskResult<TResult>(this TResult result)

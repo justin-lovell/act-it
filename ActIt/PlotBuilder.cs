@@ -35,7 +35,7 @@ namespace ActIt
                     callbackAction(o, actor);
                 }
 
-                return TaskEx.IntoTaskResult<object>(null);
+                return null;
             };
             _listeners.Add(listener);
         }
@@ -48,7 +48,7 @@ namespace ActIt
 
                 return o != null
                            ? callbackFunc(o, actor)
-                           : TaskEx.IntoTaskResult<object>(null);
+                           : null;
             };
             _listeners.Add(listener);
         }
@@ -58,7 +58,7 @@ namespace ActIt
             Listener listener = (@event, actor) =>
             {
                 callbackAction(@event, actor);
-                return TaskEx.IntoTaskResult<object>(null);
+                return null;
             };
             _listeners.Add(listener);
         }
