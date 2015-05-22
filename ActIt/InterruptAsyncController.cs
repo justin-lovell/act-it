@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace ActIt
 {
-    internal class InterruptController<TEvent> : IInterruptController
+    internal class InterruptAsyncController<TEvent> : IInterruptAsyncController
     {
         private readonly SceneActor _sceneActor;
         private readonly TEvent _theEvent;
 
-        public InterruptController(SceneActor sceneActor, TEvent theEvent)
+        public InterruptAsyncController(SceneActor sceneActor, TEvent theEvent)
         {
             _theEvent = theEvent;
             _sceneActor = sceneActor;
@@ -23,13 +23,15 @@ namespace ActIt
             Action<ReplayNotificationHub> tapCallback =
                 hub => observingFor = hub.ReplayEvents<T>();
 
+            Func<Task, IEnumerable<T>> continuationFunction = task =>
+            {
+                IEnumerable<T> enumerable =
+                    observingFor as T[] ?? observingFor.ToArray();
+                return enumerable;
+            };
+
             return _sceneActor.InterruptAsync(_theEvent, tapCallback)
-                              .ContinueWith(task =>
-                              {
-                                  IEnumerable<T> enumerable =
-                                      observingFor as T[] ?? observingFor.ToArray();
-                                  return enumerable;
-                              });
+                              .ContinueWith(continuationFunction, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
     }
 }

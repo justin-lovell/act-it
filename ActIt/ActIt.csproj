@@ -36,8 +36,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IInterruptController.cs" />
-    <Compile Include="InterruptController.cs" />
+    <Compile Include="IInterruptAsyncController.cs" />
+    <Compile Include="InterruptAsyncController.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="OpenListenExtensionMethods.cs" />
     <Compile Include="OpenPlotListenerHandler.cs" />

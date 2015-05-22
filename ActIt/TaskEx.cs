@@ -13,7 +13,9 @@ namespace ActIt
 
             Func<Task, Task, Task> aggregateFunc =
                 (current, task) =>
-                current.ContinueWith(x => task).Unwrap();
+                current.ContinueWith(x => task, TaskContinuationOptions.OnlyOnRanToCompletion)
+                       .Unwrap();
+
             return tasks.Aggregate(currentTask, aggregateFunc);
         }
 

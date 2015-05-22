@@ -30,10 +30,10 @@ namespace ActIt
             return new PlotBuilder(_listeners);
         }
 
-        public IInterruptController EncounterAndControlAsync<TEvent>(TEvent theEvent)
+        public IInterruptAsyncController EncounterAndControlAsync<TEvent>(TEvent theEvent)
         {
             var sceneActor = CreateNewSceneActor();
-            return new InterruptController<TEvent>(sceneActor, theEvent);
+            return new InterruptAsyncController<TEvent>(sceneActor, theEvent);
         }
     }
 }

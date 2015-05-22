@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace ActIt
 {
-    public interface IInterruptController
+    public interface IInterruptAsyncController
     {
         Task<IEnumerable<T>> ObservingForEvents<T>() where T : class;
     }

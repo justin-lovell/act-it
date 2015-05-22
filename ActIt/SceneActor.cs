@@ -38,12 +38,14 @@ namespace ActIt
 
             var nestedScene = new SceneActor(listeners, _context);
 
+            Action<Task> continuationFunction = task =>
+            {
+                var replayHub = new ReplayNotificationHub(historicalEvents);
+                tapCallback(replayHub);
+            };
+
             return nestedScene.InterruptAsync(theEvent)
-                              .ContinueWith(task =>
-                              {
-                                  var replayHub = new ReplayNotificationHub(historicalEvents);
-                                  tapCallback(replayHub);
-                              });
+                              .ContinueWith(continuationFunction, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         private IEnumerable<Listener> PipeEventsToHistoryRecounter<TEvent>(
@@ -71,9 +73,9 @@ namespace ActIt
             return TaskEx.WhenAll(tasks);
         }
 
-        public IInterruptController InterruptAndControlAsync<TEvent>(TEvent theEvent)
+        public IInterruptAsyncController InterruptAndControlAsync<TEvent>(TEvent theEvent)
         {
-            return new InterruptController<TEvent>(this, theEvent);
+            return new InterruptAsyncController<TEvent>(this, theEvent);
         }
     }
 }
