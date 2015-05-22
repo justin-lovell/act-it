@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,12 @@ namespace ActIt
         internal StoryFactory(IEnumerable<Listener> listeners)
         {
             _listeners = listeners.ToArray();
+        }
+
+        public void Encounter<TEvent>(TEvent theEvent)
+        {
+            var sceneActor = CreateNewSceneActor();
+            sceneActor.Interrupt(theEvent);
         }
 
         public Task EncounterAsync<TEvent>(TEvent theEvent)

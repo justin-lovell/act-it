@@ -31,5 +31,24 @@ namespace ActIt
             // assert
             Assert.That(wasCalled1, Is.True);
         }
+
+        [Test]
+        public void WhenCallingTheSynchronousTaskItShouldWork()
+        {
+            // track
+            var wasCalled1 = false;
+
+            // arrange
+            var builder = new PlotBuilder();
+            builder.Listen<TheEvent>((@event, s) => wasCalled1 = true);
+
+            var factory = builder.GenerateStory();
+
+            // act
+            factory.Encounter(new TheEvent());
+
+            // assert
+            Assert.That(wasCalled1, Is.True);
+        }
     }
 }

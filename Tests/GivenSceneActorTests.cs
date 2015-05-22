@@ -64,10 +64,10 @@ namespace ActIt
             // arrange
             var builder = new PlotBuilder();
 
-            builder.Listen<TheEvent>((@event, actor) =>
+            builder.Listen<TheEvent>(async (@event, actor) =>
             {
-                actor.InterruptAsync(new TheSecondEvent(),
-                                     hub => wasOwnEchoHeard = hub.ReplayEvents<TheSecondEvent>().Any());
+                await actor.InterruptAsync(new TheSecondEvent(),
+                                           hub => wasOwnEchoHeard = hub.ReplayEvents<TheSecondEvent>().Any());
             });
 
             // act
@@ -108,6 +108,64 @@ namespace ActIt
             // act
             var story = builder.GenerateStory();
             await story.EncounterAsync(new TheEvent());
+
+            // assert
+            Assert.That(checkpoints.Count, Is.EqualTo(4));
+            Assert.That(checkpoints, Is.Ordered);
+        }
+
+        [Test]
+        public void WhenCallingNestedInterruptSynchronouslyWithListenerItShouldNotListenToOwnEcho()
+        {
+            var wasOwnEchoHeard = false;
+
+            // arrange
+            var builder = new PlotBuilder();
+
+            builder.Listen<TheEvent>((@event, actor) =>
+            {
+                actor.Interrupt(new TheSecondEvent(),
+                                hub => wasOwnEchoHeard = hub.ReplayEvents<TheSecondEvent>().Any());
+            });
+
+            // act
+            var story = builder.GenerateStory();
+            story.Encounter(new TheEvent());
+
+            // assert
+            Assert.That(wasOwnEchoHeard, Is.False);
+        }
+
+        [Test]
+        public void WhenCallingNestedInterruptSynchronouslyWithListenersItShouldCascadeInRegistrationOrder()
+        {
+            var checkpoints = new List<int>();
+
+            // arrange
+            var builder = new PlotBuilder();
+
+            builder.Listen<TheEvent>(async (@event, actor) =>
+            {
+                checkpoints.Add(1);
+                await actor.InterruptAsync(new TheSecondEvent(),
+                                           hub =>
+                                           {
+                                               if (hub.ReplayEvents<TheThirdEvent>().Count() == 1)
+                                               {
+                                                   checkpoints.Add(3);
+                                               }
+                                           });
+                checkpoints.Add(4);
+            });
+            builder.Listen<TheSecondEvent>((@event, actor) =>
+            {
+                actor.Interrupt(new TheThirdEvent());
+                checkpoints.Add(2);
+            });
+
+            // act
+            var story = builder.GenerateStory();
+            story.Encounter(new TheEvent());
 
             // assert
             Assert.That(checkpoints.Count, Is.EqualTo(4));

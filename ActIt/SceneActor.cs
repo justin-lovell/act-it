@@ -77,5 +77,21 @@ namespace ActIt
         {
             return new InterruptAsyncController<TEvent>(this, theEvent);
         }
+
+        public void Interrupt<TEvent>(TEvent theEvent)
+        {
+            var task = InterruptAsync(theEvent);
+            var asyncResult = (IAsyncResult)task;
+
+            asyncResult.AsyncWaitHandle.WaitOne();
+        }
+
+        public void Interrupt<TEvent>(TEvent theEvent, Action<ReplayNotificationHub> tapCallback)
+        {
+            var task = InterruptAsync(theEvent, tapCallback);
+            var asyncResult = (IAsyncResult)task;
+
+            asyncResult.AsyncWaitHandle.WaitOne();
+        }
     }
 }
