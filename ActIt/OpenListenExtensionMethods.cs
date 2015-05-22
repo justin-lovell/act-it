@@ -15,6 +15,7 @@ namespace ActIt
                 typeof (OpenListenExtensionMethods).GetMethod("ProcessEventToHandlerGeneric", bindingFlags);
         }
 
+        // ReSharper disable once UnusedMember.Local
         private static Task ProcessEventToHandlerGeneric<THandler, TEvent>(
             THandler theHandler,
             TEvent theEvent,
@@ -26,13 +27,26 @@ namespace ActIt
 
         private static Task ProcessEventToHandler(Type concreteHandlerType, object theEvent, SceneActor actor)
         {
+            var genericMethodInfo = MakeGenercProcessEventToHandlerMethodInfo(concreteHandlerType, theEvent);
+            var concreteHandlerInstance = CreateConcreteHandlerInstance(concreteHandlerType);
+
+            object[] parameters = {concreteHandlerInstance, theEvent, actor};
+            return (Task) genericMethodInfo.Invoke(null, parameters);
+        }
+
+        private static object CreateConcreteHandlerInstance(Type concreteHandlerType)
+        {
+            // todo: make a cache of the following.
+            var concreteHandlerInstance = Activator.CreateInstance(concreteHandlerType);
+            return concreteHandlerInstance;
+        }
+
+        private static MethodInfo MakeGenercProcessEventToHandlerMethodInfo(Type concreteHandlerType, object theEvent)
+        {
             var typeArguments = new[] {concreteHandlerType, theEvent.GetType()};
             var genericMethodInfo = OpenProcessEventToHandlerMethodInfo.MakeGenericMethod(typeArguments);
 
-            var concreteHandlerInstance = Activator.CreateInstance(concreteHandlerType);
-            object[] parameters = {concreteHandlerInstance, theEvent, actor};
-
-            return (Task) genericMethodInfo.Invoke(null, parameters);
+            return genericMethodInfo;
         }
 
         public static void OpenlyListen(this PlotBuilder plotBuilder, Type handlerType)
