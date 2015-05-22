@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace ActIt
             THandler theHandler,
             TEvent theEvent,
             SceneActor actor)
-            where THandler : OpenPlotListenerHandler<TEvent>
+            where THandler : IOpenPlotListenerAsyncHandler<TEvent>
         {
             return theHandler.Handle(theEvent, actor);
         }
@@ -56,10 +57,18 @@ namespace ActIt
                 throw new ArgumentNullException("handlerType");
             }
 
-            if (handlerType.BaseType == null || !handlerType.BaseType.IsGenericType
-                || handlerType.BaseType.GetGenericTypeDefinition() != typeof (OpenPlotListenerHandler<>))
+            // todo: loop through all the generic implementations
+
+            var implementedAsyncHandlerInterfaceDefinition =
+                (from interfaceType in handlerType.GetInterfaces()
+                 where interfaceType.IsGenericType
+                       && interfaceType.GetGenericTypeDefinition() == typeof (IOpenPlotListenerAsyncHandler<>)
+                 select interfaceType
+                ).FirstOrDefault();
+
+            if (implementedAsyncHandlerInterfaceDefinition == null)
             {
-                // todo: handlerType implements OpenPlotListenerHandler
+                // todo: handlerType implements OpenPlotListenerAsyncHandler
                 throw new NotImplementedException();
             }
 
@@ -68,7 +77,7 @@ namespace ActIt
             // todo: verify that the open generic parameters are same length
             // todo: ensure that type constraints are obeyed (handler type)
 
-            var listenForGenericType = handlerType.BaseType.GetGenericArguments()[0].GetGenericTypeDefinition();
+            var listenForGenericType = implementedAsyncHandlerInterfaceDefinition.GetGenericArguments()[0].GetGenericTypeDefinition();
 
             plotBuilder.EavesDrop((@event, actor) =>
             {

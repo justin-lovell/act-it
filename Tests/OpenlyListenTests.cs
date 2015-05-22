@@ -15,7 +15,7 @@ namespace ActIt
         {
         }
 
-        private class OpenEventHandler<T> : OpenPlotListenerHandler<OpenEvent<T>>
+        private class OpenEventAsyncHandler<T> : IOpenPlotListenerAsyncHandler<OpenEvent<T>>
         {
             private static async Task HandleAysnc(T theEvent, SceneActor actor)
             {
@@ -23,7 +23,7 @@ namespace ActIt
                 await actor.InterruptAsync(newEvent);
             }
 
-            public override Task Handle(OpenEvent<T> theEvent, SceneActor actor)
+            public Task Handle(OpenEvent<T> theEvent, SceneActor actor)
             {
                 return HandleAysnc(theEvent.WrappedEvent, actor);
             }
@@ -60,7 +60,7 @@ namespace ActIt
 
             // arrange
             var builder = new PlotBuilder();
-            builder.OpenlyAsyncListen(typeof (OpenEventHandler<>));
+            builder.OpenlyAsyncListen(typeof (OpenEventAsyncHandler<>));
             builder.Listen<HandledEvent>((@event, actor) => encounteredEvents.Add(@event.EventInstance));
 
             // act
