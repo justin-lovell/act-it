@@ -25,13 +25,15 @@ namespace ActIt
 
             Func<Task, IEnumerable<T>> continuationFunction = task =>
             {
+                task.VerifyTaskNotFaulted();
+
                 IEnumerable<T> enumerable =
                     observingFor as T[] ?? observingFor.ToArray();
                 return enumerable;
             };
 
             return _sceneActor.InterruptAsync(_theEvent, tapCallback)
-                              .ContinueWith(continuationFunction, TaskContinuationOptions.OnlyOnRanToCompletion);
+                              .ContinueWith(continuationFunction);
         }
 
         IEnumerable<T> IInterruptController.ObservingForEvent<T>()

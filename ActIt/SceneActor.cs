@@ -40,12 +40,14 @@ namespace ActIt
 
             Action<Task> continuationFunction = task =>
             {
+                task.VerifyTaskNotFaulted();
+
                 var replayHub = new ReplayNotificationHub(historicalEvents);
                 tapCallback(replayHub);
             };
 
             return nestedScene.InterruptAsync(theEvent)
-                              .ContinueWith(continuationFunction, TaskContinuationOptions.OnlyOnRanToCompletion);
+                              .ContinueWith(continuationFunction);
         }
 
         private IEnumerable<Listener> PipeEventsToHistoryRecounter<TEvent>(
@@ -78,20 +80,33 @@ namespace ActIt
             return new InterruptController<TEvent>(this, theEvent);
         }
 
-        public void Interrupt<TEvent>(TEvent theEvent)
-        {
-            var task = InterruptAsync(theEvent);
-            var asyncResult = (IAsyncResult)task;
-
-            asyncResult.AsyncWaitHandle.WaitOne();
-        }
-
-        public void Interrupt<TEvent>(TEvent theEvent, Action<ReplayNotificationHub> tapCallback)
+        public void Interrupt<TEvent>(TEvent theEvent, Action<ReplayNotificationHub> tapCallback = null)
         {
             var task = InterruptAsync(theEvent, tapCallback);
-            var asyncResult = (IAsyncResult)task;
 
-            asyncResult.AsyncWaitHandle.WaitOne();
+            try
+            {
+                task.Wait();
+            }
+            catch (AggregateException aggregateException)
+            {
+                Exception lastException = null;
+
+                aggregateException.Handle(exception =>
+                {
+                    lastException = exception;
+                    return true;
+                });
+
+                if (lastException == null)
+                {
+                    throw;
+                }
+
+                var errorMessage =
+                    "There was an error during the processing of the event. View inner exception for details";
+                throw new InterruptExecutionException(errorMessage, lastException);
+            }
         }
     }
 }

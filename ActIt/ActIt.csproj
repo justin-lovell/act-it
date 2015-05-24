@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="IInterruptController.cs" />
     <Compile Include="InterruptController.cs" />
+    <Compile Include="InterruptExecutionException.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="OpenListenExtensionMethods.cs" />
     <Compile Include="OpenPlotListenerAsyncHandler.cs" />
