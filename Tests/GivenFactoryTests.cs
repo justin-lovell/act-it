@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace ActIt
@@ -81,6 +82,54 @@ namespace ActIt
             Assert.That(firstState, Is.Not.Null);
             Assert.That(secondState, Is.Not.Null);
             Assert.That(firstState, Is.Not.SameAs(secondState));
+        }
+
+        [Test]
+        public void WhenDirectoringItShouldAllowAccessToSceneActor()
+        {
+            // track
+            var calls = new List<int>();
+
+            // arrange
+            var builder = new PlotBuilder();
+            builder.Listen<TheEvent>((@event, s) => calls.Add(2));
+
+            // act
+            var story = builder.GenerateStory();
+            story.Direct(actor =>
+            {
+                calls.Add(1);
+                story.Encounter(new TheEvent());
+                calls.Add(3);
+            });
+
+            // assert
+            Assert.That(calls, Has.Count.EqualTo(3));
+            Assert.That(calls, Is.Ordered);
+        }
+
+        [Test]
+        public async Task WhenDirectoringAsyncItShouldAllowAccessToSceneActor()
+        {
+            // track
+            var calls = new List<int>();
+
+            // arrange
+            var builder = new PlotBuilder();
+            builder.Listen<TheEvent>((@event, s) => calls.Add(2));
+
+            // act
+            var story = builder.GenerateStory();
+            await story.DirectAsync(async actor =>
+            {
+                calls.Add(1);
+                await story.EncounterAsync(new TheEvent());
+                calls.Add(3);
+            });
+
+            // assert
+            Assert.That(calls, Has.Count.EqualTo(3));
+            Assert.That(calls, Is.Ordered);
         }
     }
 }
