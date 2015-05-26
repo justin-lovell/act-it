@@ -223,12 +223,16 @@ namespace ActIt
 
             builder.Listen<TheEvent>((@event, actor) =>
                                      contexts.Add(actor.Context<TheContext>()));
+            builder.Listen<TheSecondEvent>((@event, actor) =>
+            {
+                actor.Interrupt(new TheEvent());
+                actor.Interrupt(new TheEvent());
+            });
 
-            var story = builder.GenerateStory();
 
             // act
-            await story.EncounterAsync(new TheEvent());
-            await story.EncounterAsync(new TheEvent());
+            var story = builder.GenerateStory();
+            await story.EncounterAsync(new TheSecondEvent());
 
             // assert
             Assert.That(contexts.Count, Is.EqualTo(2));
@@ -245,12 +249,16 @@ namespace ActIt
 
             builder.Listen<TheEvent>((@event, actor) =>
                                      contexts.Add(actor.Context(() => new TheCtorContext(2))));
+            builder.Listen<TheSecondEvent>((@event, actor) =>
+            {
+                actor.Interrupt(new TheEvent());
+                actor.Interrupt(new TheEvent());
+            });
 
-            var story = builder.GenerateStory();
 
             // act
-            await story.EncounterAsync(new TheEvent());
-            await story.EncounterAsync(new TheEvent());
+            var story = builder.GenerateStory();
+            await story.EncounterAsync(new TheSecondEvent());
 
             // assert
             Assert.That(contexts.Count, Is.EqualTo(2));

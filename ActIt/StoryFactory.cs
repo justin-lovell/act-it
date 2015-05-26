@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +6,6 @@ namespace ActIt
 {
     public sealed class StoryFactory
     {
-        private readonly StoryContext _context = new StoryContext();
         private readonly IEnumerable<Listener> _listeners;
 
         internal StoryFactory(IEnumerable<Listener> listeners)
@@ -29,7 +27,8 @@ namespace ActIt
 
         private SceneActor CreateNewSceneActor()
         {
-            return new SceneActor(_listeners, _context);
+            var context = new StoryContext();
+            return new SceneActor(_listeners, context);
         }
 
         public PlotBuilder CreateNestedBuilder()

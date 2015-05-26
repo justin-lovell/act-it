@@ -10,6 +10,14 @@ namespace ActIt
         {
         }
 
+        private class TheOtherEvent
+        {
+        }
+
+        private class TheState
+        {
+        }
+
         [Test]
         public async Task WhenCreatingNestedBuilderItWillFirePreviousSubscriptions()
         {
@@ -49,6 +57,30 @@ namespace ActIt
 
             // assert
             Assert.That(wasCalled1, Is.True);
+        }
+
+        [Test]
+        public void WhenThereAreMultipleEncountersItShouldNotShareTheState()
+        {
+            // track
+            TheState firstState = null;
+            TheState secondState = null;
+
+            // arrange
+            var builder = new PlotBuilder();
+            builder.Listen<TheEvent>((@event, s) => firstState = s.Context<TheState>());
+            builder.Listen<TheOtherEvent>((@event, s) => secondState = s.Context<TheState>());
+
+            var factory = builder.GenerateStory();
+
+            // act
+            factory.Encounter(new TheEvent());
+            factory.Encounter(new TheOtherEvent());
+
+            // assert
+            Assert.That(firstState, Is.Not.Null);
+            Assert.That(secondState, Is.Not.Null);
+            Assert.That(firstState, Is.Not.SameAs(secondState));
         }
     }
 }
